@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>人脸识别应用</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">欢迎使用人脸识别应用</h1>
+        <form action="" enctype="multipart/form-data" method="POST">
+            <div class="form-group">
+                <label for="picture" class="form-label">选择图片</label>
+                <input type="file" name="picture" id="picture" class="form-input" />
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="align">是否使用面部矫正</label>
+                <input class="form-checkbox" type="checkbox" id="align" name="align" value="true">
+            </div>
+            <div class="form-group">
+                <button type="submit" class="button button-primary">上传</button>
+            </div>
+        </form>
+        <div class="result">
+            <h2 class="result-title">识别结果</h2>
+            <table class="result-table">
+                <tr>
+                    <th>结果</th>
+                    <td>{{recognition_result}}</td>
+                </tr>
+                <tr>
+                    <th>总耗时</th>
+                    <td>{{time_consume}} 秒</td>
+                </tr>
+            </table>
+            <div class="result-image">
+                <img src="data:image/jpeg;base64,{{ image_base64 }}" alt="上传的图片">
+                <p class="result-image-description">上传的图片</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

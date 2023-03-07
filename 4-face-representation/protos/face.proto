@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option go_package = "github.com/face/recognition";
+package recognition;
+
+service FaceRecognitionService {
+    rpc FaceRecognition (RecRequest) returns (RecResponse) {}
+}
+
+message RecRequest {
+    repeated float feature = 1;
+}
+
+message RecResponse {
+    string name = 2;
+}
