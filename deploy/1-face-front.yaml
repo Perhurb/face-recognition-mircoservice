@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: face-front
+  namespace: face
+  labels:
+    app: front
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: front
+  template:
+    metadata:
+      labels:
+        app: front
+    spec:
+      serviceAccountName: face-account
+      containers:
+      - name: front
+        image: perhurb/face-front:v1.0.0
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: FACE_DETECTION_SERVICE
+          valueFrom:
+            configMapKeyRef:
+              name: face-env
+              key: face-detection-service
+        - name: FACE_DETECTION_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: face-env
+              key: face-detection-port
+        ports:
+        - containerPort: 9080
+        securityContext:
+          runAsUser: 1000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: face-front
+  namespace: face
+  labels:
+    app: front
+    service: face-front
+spec:
+  type: NodePort
+  ports:
+  - port: 9080
+    name: http
+    nodePort: 30000
+  selector:
+    app: front

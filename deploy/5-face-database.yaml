@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: face-database-compute-v1
+  namespace: face
+  labels:
+    app: database-compute
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: database-compute
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: database-compute
+        version: v1
+    spec:
+      serviceAccountName: face-account
+      containers:
+      - name: database-compute
+        image: perhurb/face-database-compute:v1.0.0
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: REDIS_SERVICE
+          valueFrom:
+            configMapKeyRef:
+              name: face-env
+              key: redis-service
+        - name: REDIS_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: face-env
+              key: redis-port
+        ports:
+        - containerPort: 9080
+        securityContext:
+          runAsUser: 1000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: face-database-compute
+  namespace: face
+  labels:
+    app: database-compute
+    service: face-database-compute
+spec:
+  ports:
+  - port: 9080
+    name: grpc
+    protocol: TCP
+  selector:
+    app: database-compute
