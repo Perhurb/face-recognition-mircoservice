@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: face-detection-v1
+  namespace: face
+  labels:
+    app: detection
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: detection
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: detection
+        version: v1
+    spec:
+      serviceAccountName: face-account
+      containers:
+      - name: detection
+        image: perhurb/face-detection:v1.0.0
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: FACE_ALIGNMENT_SERVICE
+          valueFrom:
+            configMapKeyRef:
+              name: face-env
+              key: face-alignment-service
+        - name: FACE_ALIGNMENT_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: face-env
+              key: face-alignment-port
+        - name: FACE_REPRESENTATION_SERVICE
+          valueFrom:
+            configMapKeyRef:
+              name: face-env
+              key: face-representation-service
+        - name: FACE_REPRESENTATION_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: face-env
+              key: face-representation-port
+        ports:
+        - containerPort: 9080
+        securityContext:
+          runAsUser: 1000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: face-detection
+  namespace: face
+  labels:
+    app: detection
+    service: face-detection
+spec:
+  ports:
+  - port: 9080
+    name: http
+  selector:
+    app: detection

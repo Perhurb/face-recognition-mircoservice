@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: face-alignment-v1
+  namespace: face
+  labels:
+    app: alignment
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alignment
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: alignment
+        version: v1
+    spec:
+      serviceAccountName: face-account
+      containers:
+      - name: alignment
+        image: perhurb/face-alignment:v1.0.0
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: FACE_REPRESENTATION_SERVICE
+          valueFrom:
+            configMapKeyRef:
+              name: face-env
+              key: face-representation-service
+        - name: FACE_REPRESENTATION_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: face-env
+              key: face-representation-port
+        ports:
+        - containerPort: 9080
+        securityContext:
+          runAsUser: 1000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: face-alignment
+  namespace: face
+  labels:
+    app: alignment
+    service: face-alignment
+spec:
+  ports:
+  - port: 9080
+    name: http
+  selector:
+    app: alignment
