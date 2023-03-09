@@ -16,7 +16,7 @@ from flask import jsonify
 from flask import request
 import numpy as np
 
-alignment_serviceName = "localhost" if (os.environ.get(" FACE_ALIGNMENT_SERVICE") is None) else os.environ.get(
+alignment_serviceName = "localhost" if (os.environ.get("FACE_ALIGNMENT_SERVICE") is None) else os.environ.get(
     "FACE_ALIGNMENT_SERVICE")
 alignment_port = 5003 if (os.environ.get("FACE_ALIGNMENT_PORT") is None) else os.environ.get("FACE_ALIGNMENT_PORT")
 alignment_service = "http://" + alignment_serviceName + ":" + str(alignment_port)
