@@ -36,8 +36,7 @@ m.patch()
 @app.route('/', methods=['POST'])  # 添加路由
 def process():
     image = request.files["picture"]
-    align = request.form.get("align")
-    res = detection(image, align)
+    res = detection(image, align=1)
     data = {"result": res}
     return jsonify(data)
 
