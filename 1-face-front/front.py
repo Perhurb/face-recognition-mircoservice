@@ -36,11 +36,11 @@ def upload():
         if not (picture and allowed_file(picture.filename)):
             return jsonify({"error": 1001, "msg": u"请检查上传的图片类型，仅限于png、PNG、jpg、JPG、bmp"})
         align = request.form.get('align')
-        align = 1 if align is not None else 0
         files = {'picture': (picture.filename, picture, picture.mimetype)}
+        data = {'align': align}
         start = time()
         try:
-            response = requests.post(url=detection_service, headers={'align': align}, files=files)
+            response = requests.post(url=detection_service, data=data, files=files)
             response_loads = json.loads(response.text)
             recognition_result = response_loads["result"]
         except:

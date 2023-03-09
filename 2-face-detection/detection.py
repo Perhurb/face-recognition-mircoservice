@@ -14,7 +14,6 @@ from PIL import Image
 from flask import Flask
 from flask import jsonify
 from flask import request
-from werkzeug.datastructures import FileStorage
 import numpy as np
 
 alignment_serviceName = "localhost" if (os.environ.get(" FACE_ALIGNMENT_SERVICE") is None) else os.environ.get(
@@ -34,14 +33,10 @@ face_detector = dlib.get_frontal_face_detector()
 m.patch()
 
 
-# 创建线程锁对象
-
-
 @app.route('/', methods=['POST'])  # 添加路由
 def process():
-    image: FileStorage = request.files["picture"]
-    align = request.headers.get("align")
-    print(align)
+    image = request.files["picture"]
+    align = request.form.get("align")
     res = detection(image, align)
     data = {"result": res}
     return jsonify(data)
