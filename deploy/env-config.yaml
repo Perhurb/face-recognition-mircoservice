@@ -15,7 +15,7 @@ data:
   face-alignment-port: "9080"
   face-representation-service: "face-representation"
   face-representation-port: "9080"
-  face-database-compute-service: "face"
+  face-database-compute-service: "face-database-compute"
   face-database-compute-port: "9080"
 
   redis-service: "face-redis"
