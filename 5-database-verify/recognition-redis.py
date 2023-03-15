@@ -1,5 +1,6 @@
 import math
 import sys
+import time
 from concurrent import futures
 import grpc
 import logging
@@ -28,6 +29,7 @@ class FaceRecognition(FaceRecognitionServiceServicer):
         self.length = None
         self.labels = None
         self.encodings = None
+        self.expires = math.inf
 
     def load_data(self):
         with open("lfw_train.model", "rb") as f:
@@ -49,7 +51,9 @@ class FaceRecognition(FaceRecognitionServiceServicer):
         self.encodings = r.lrange("encodings", 0, self.length)
     def FaceRecognition(self, request, context):
         # self.load_data()
-        self.load_data_from_redis()
+        if self.expires < time.time():
+            self.load_data_from_redis()
+            self.expires = time.time() + 20
         img_enc = np.array(request.feature)
         self.index = math.inf
         self.min_distance = math.inf
